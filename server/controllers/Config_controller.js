@@ -495,6 +495,8 @@
 
 
 const Config = require("../models/Config_model");
+// import cloudinary from "../../../utils/cloudinary.js";
+const cloudinary = require("../utils/cloudinary");
 
 // Add Application Name
 const addApplicationName = async (req, res) => {
@@ -692,86 +694,29 @@ const addLogo = async (req, res) => {
   try {
     const configuration = await Config.find();
 
-    // console.log(req.files);
-    // console.log(configuration[0].logo);
-    // console.log(configuration[0]);
-    // console.log(configuration[0].logo[0].Headerlogo);
-    // console.log(configuration[0].logo[0].Footerlogo);
-    // console.log(configuration[0].logo[0].Adminlogo);
+    let result1, result2, result3;
 
-    let result1;
-    let result2;
-    let result3;
-    // console.log(req.files.Headerlogo)
-    if (req.files.Headerlogo) {
-      const result = await cloudinary.v2.uploader.upload(
-        req.files.Headerlogo.tempFilePath,
-        { folder: "bolo/Logo" }
-      );
+    // Check and upload each logo if present
+    if (req.files && req.files.Headerlogo) {
+      const result = await cloudinary.uploader.upload(req.files.Headerlogo.tempFilePath, { folder: "bolo/Logo" });
       result1 = result.secure_url;
     }
-    if (req.files.Footerlogo) {
-      const result = await cloudinary.v2.uploader.upload(
-        req.files.Footerlogo.tempFilePath,
-        { folder: "bolo/Logo" }
-      );
+    if (req.files && req.files.Footerlogo) {
+      const result = await cloudinary.uploader.upload(req.files.Footerlogo.tempFilePath, { folder: "bolo/Logo" });
       result2 = result.secure_url;
     }
-    if (req.files.Adminlogo) {
-      // console.log(req.files.Adminlogo.path)
-      const result = await cloudinary.v2.uploader.upload(
-        req.files.Adminlogo.tempFilePath,
-        { folder: "bolo/Logo" }
-      );
+    if (req.files && req.files.Adminlogo) {
+      const result = await cloudinary.uploader.upload(req.files.Adminlogo.tempFilePath, { folder: "bolo/Logo" });
       result3 = result.secure_url;
     }
 
-    // console.log(result1);
-    // console.log(result2);
-    // console.log(result3);
-
-    // if (configuration.length === 0) {
-    //   const createLogo = await Config.create({
-    //     logo: {
-    //       Headerlogo: result1,
-    //       Footerlogo: result2,
-    //       Adminlogo: result3,
-    //     },
-    //   });
-
-    //   if (createLogo) {
-    //     return res.status(200).json({
-    //       status: "success",
-    //       message: "Created Logos Successfully",
-    //     });
-    //   }
-    // } else {
-    //   const updateLogo = await Config.updateOne(
-    //     {},
-    //     {
-    //       $set: {
-    //         logo: {
-    //           Headerlogo: result1,
-    //           Footerlogo: result2,
-    //           Adminlogo: result3,
-    //         },
-    //       },
-    //     }
-    //   );
-    //   if (updateLogo) {
-    //     return res.status(200).json({
-    //       status: "success",
-    //       message: "Updated Logos Successfully",
-    //     });
-    //   }
-    // }
     if (configuration.length === 0) {
-      // If no configuration exists, create a new one with uploaded logos
+      // Create a new configuration with the uploaded logos
       const createLogo = await Config.create({
         logo: {
-          Headerlogo: result1 || configuration[0].logo[0].Headerlogo,
-          Footerlogo: result2 || configuration[0].logo[0].Footerlogo,
-          Adminlogo: result3 || configuration[0].logo[0].Adminlogo,
+          Headerlogo: result1 || "",
+          Footerlogo: result2 || "",
+          Adminlogo: result3 || "",
         },
       });
 
@@ -782,14 +727,13 @@ const addLogo = async (req, res) => {
         });
       }
     } else {
-      // If configuration exists, update only the logos that are present in the current request
+      // Update existing configuration with new logos
+      const existingLogos = configuration[0].logo[0] || { Headerlogo: "", Footerlogo: "", Adminlogo: "" };
+
       const updatedLogos = {
-        Headerlogo:
-          result1 !== undefined ? result1 : configuration[0].logo[0].Headerlogo,
-        Footerlogo:
-          result2 !== undefined ? result2 : configuration[0].logo[0].Footerlogo,
-        Adminlogo:
-          result3 !== undefined ? result3 : configuration[0].logo[0].Adminlogo,
+        Headerlogo: result1 !== undefined ? result1 : existingLogos.Headerlogo,
+        Footerlogo: result2 !== undefined ? result2 : existingLogos.Footerlogo,
+        Adminlogo: result3 !== undefined ? result3 : existingLogos.Adminlogo,
       };
 
       const updateLogo = await Config.updateOne(
@@ -809,57 +753,11 @@ const addLogo = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error);
-  }
-};
-
-
-// Add Terms of Use
-const addTermsOfUse = async (req, res) => {
-  try {
-    const { terms_of_use } = req.body;
-
-    const configuration = await Config.find();
-    if (configuration.length === 0) {
-      const createdTermsOfUse = await Config.create({ terms_of_use });
-
-      if (createdTermsOfUse) {
-        return res.status(201).json({
-          status: "success",
-          message: "Added terms of use successfully",
-        });
-      }
-    } else {
-      const updatedTermsOfUse = await Config.updateOne({}, { $set: { terms_of_use } });
-
-      if (updatedTermsOfUse) {
-        return res.status(200).json({
-          status: "success",
-          message: "Updated terms of use successfully",
-        });
-      }
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Something went wrong!" });
-  }
-};
-
-// Get Terms of Use
-const getTermsOfUse = async (req, res) => {
-  try {
-    let configuration = await Config.findOne({});
-    if (!configuration) {
-      configuration = await Config.create({});
-    }
-
-    res.status(200).json({
-      status: "success",
-      data: configuration.terms_of_use || "",
+    console.error(error);
+    res.status(500).json({
+      status: "error",
+      message: "Server error",
     });
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Something went wrong!" });
   }
 };
 
@@ -886,7 +784,7 @@ module.exports = {
   addAddress,
   getConfig,
   addLogo,
-  addTermsOfUse,
-  getTermsOfUse,
+  // addTermsOfUse,
+  // getTermsOfUse,
   deleteConfig,
 };

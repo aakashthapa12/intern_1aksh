@@ -121,6 +121,8 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const dotenv = require("dotenv");
 
+const fileUpload = require('express-fileupload');
+
 const errorMiddleware = require("./middleware/errorMiddleware.js");
 const userRouter = require("./routes/userRoutes");
 const Config_routes = require("./routes/Config_routes");
@@ -150,6 +152,7 @@ app.use(
 app.use(express.json({ limit: "10kb" }));
 app.use(express.urlencoded({ extended: true, limit: "10kb" }));
 app.use(cookieParser());
+app.use(fileUpload({ useTempFiles: true, tempFileDir: '/tmp/' }));
 
 // Development logging
 app.use(morgan("dev"));

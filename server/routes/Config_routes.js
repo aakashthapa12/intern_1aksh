@@ -92,7 +92,8 @@
 
 
 
-const { Router } = require('express');
+// const { Router } = require('express');
+const express = require('express');
 const {
   addAddress,
   // addGST,
@@ -109,7 +110,7 @@ const {
 // const { upload } = require('../../../Utils/cloudinary');
 // const { authorizeRoles, isAuthenticatedUser } = require('../../../middlewares/auth');
 
-const router = Router();
+const router = express.Router();
 
 // let cpUpload = upload.fields([
 //   { name: 'Headerlogo', maxCount: 1 },
@@ -146,9 +147,11 @@ router.route('/address')
   );
 // router.route('/scrollText').post(isAuthenticatedUser, authorizeRoles('admin', 'Employee'), addScrollText);
 
-router.route('/logo')
-//   .post(isAuthenticatedUser, authorizeRoles('admin', 'Employee'), addLogo);
-    .post(addLogo);
+// router.route('/logo')
+// //   .post(isAuthenticatedUser, authorizeRoles('admin', 'Employee'), addLogo);
+//     .post(addLogo);
+
+router.post('/logo', addLogo);
 
 router.route('/')
   .get(getConfig)
