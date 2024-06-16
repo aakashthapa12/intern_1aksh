@@ -165,6 +165,7 @@ const RegisterImage = React.lazy(() => import('./views/websiteRelated/RegisterIm
 const LoginImage = React.lazy(() => import('./views/websiteRelated/LoginImage'))
 const ShopPageImage = React.lazy(() => import('./views/websiteRelated/ShopPageImage'))
 const Testimonials = React.lazy(() => import('./views/websiteRelated/Testimonials'))
+const Content = React.lazy(() => import('./views/websiteRelated/Content'))
 
 
 const SocialMedia = React.lazy(() => import('./views/configuration/SocialMedia.js'))
@@ -195,6 +196,11 @@ const routes = [
   { path: '/website-related/login-image', name: 'LoginImage', element: LoginImage },
   { path: '/website-related/shop-page-image', name: 'ShopPageImage', element: ShopPageImage },
   { path: '/website-related/testimonials', name: 'Testimonials', element: Testimonials },
+  { path: '/website-related/content', name: 'Content', element: Content },
+
+
+
+
   { path: '/configuration/address', name: 'Address', element: Address },
   { path: '/configuration/logos', name: 'Logos', element: Logos },
   { path: '/configuration/copyright-message', name: 'Copyright Message', element: CopyrightMessage },

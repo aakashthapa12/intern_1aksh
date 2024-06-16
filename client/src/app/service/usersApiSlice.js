@@ -180,6 +180,20 @@ export const userApiSlice = apiSlice.injectEndpoints({
         body: data,
       }),
     }),
+    createSocialMedia: builder.mutation({
+      query: (data) => ({
+        url: '/api/v1/config/social',
+        method: 'POST',
+        body: data,
+      }),
+    }),
+    appName: builder.mutation({
+      query: (data) => ({
+        url: '/api/v1/config/application/name',
+        method: 'POST',
+        body: data,
+      }),
+    }),
   }),
 })
 
@@ -188,4 +202,6 @@ export const {
   useRegisterMutation,
   useLogoutUserMutation,
   useUpdateUserMutation,
+  useCreateSocialMediaMutation,
+  useAppNameMutation,
 } = userApiSlice

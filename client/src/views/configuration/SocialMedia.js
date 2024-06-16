@@ -1,269 +1,225 @@
 
-// static (for ui only , i have created dynamic see below)
-import React, { useState } from 'react'
-import {
-  CContainer,
-  CRow,
-  CCol,
-  CCard,
-  CCardBody,
-  CForm,
-  CFormLabel,
-  CFormInput,
-  CButton
-} from '@coreui/react'
 
-const SocialMedia = () => {
-  const [links, setLinks] = useState({
-    facebook: '',
-    twitter: '',
-    instagram: '',
-    youtube: '',
-    linkedin: '',
-  })
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-    setLinks({
-      ...links,
-      [name]: value,
-    })
-  }
+import React, { useEffect, useState } from 'react';
+import ClipLoader from 'react-spinners/ClipLoader';
+import swal from 'sweetalert';
+import axios from 'axios';
 
-  const handleSave = () => {
-    alert('Save button clicked')
-  }
+function Socialmedia() {
+    const [loading, setLoading] = useState(false);
+    const [facebook, setFacebook] = useState('');
+    const [instagram, setInstagram] = useState('');
+    const [twitter, setTwitter] = useState('');
+    const [linkedin, setLinkedin] = useState('');
+    const [youtube, setYoutube] = useState('');
+    const [configData, setConfigData] = useState(null); // State to store entire configuration data
 
-  return (
-    <CContainer>
-      <CRow className="justify-content-center mt-4">
-        <CCol md="8">
-          <CCard>
-            <CCardBody>
-              <h2 className="text-center mb-4">Social Media</h2>
-              <CForm>
-                <div className="d-flex flex-column mb-3">
-                  <CFormLabel htmlFor="facebook">Facebook</CFormLabel>
-                  <CFormInput
-                    type="text"
-                    id="facebook"
-                    name="facebook"
-                    placeholder="Facebook"
-                    value={links.facebook}
-                    onChange={handleChange}
-                  />
+    useEffect(() => {
+        // Fetch initial configuration when component mounts
+        getConfiguration();
+    }, []);
+
+    const getConfiguration = async () => {
+        try {
+            const response = await axios.get('http://localhost:5000/api/v1/config', {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    Pragma: 'no-cache',
+                    Expires: '0',
+                },
+            });
+
+            if (response.status === 200) {
+                const result = response.data.result; // Fetch the configuration object directly
+
+                if (result && result.socialMedia && result.socialMedia.length > 0) {
+                    const socialMedia = result.socialMedia[0]; // Access the first object in the socialMedia array
+                    setConfigData(result); // Store entire configuration data
+                    setFacebook(socialMedia.facebook || '');
+                    setInstagram(socialMedia.instagram || '');
+                    setTwitter(socialMedia.twitter || '');
+                    setLinkedin(socialMedia.linkedin || '');
+                    setYoutube(socialMedia.youtube || '');
+                } else {
+                    setConfigData(null); // No social media configuration found
+                }
+            }
+        } catch (error) {
+            console.error('Error fetching configuration:', error);
+        }
+    };
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        switch (name) {
+            case 'facebook':
+                setFacebook(value);
+                break;
+            case 'twitter':
+                setTwitter(value);
+                break;
+            case 'instagram':
+                setInstagram(value);
+                break;
+            case 'linkedin':
+                setLinkedin(value);
+                break;
+            case 'youtube':
+                setYoutube(value);
+                break;
+            default:
+                break;
+        }
+    };
+
+    const handleSubmit = async () => {
+        setLoading(true);
+        const data = {
+            facebook,
+            twitter,
+            instagram,
+            linkedin,
+            youtube
+        };
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/v1/config/social', data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.status === 201) {
+                setLoading(false);
+                swal('Success!', response.data.message, 'success');
+
+                // After successful submission, update the local state
+                setConfigData({
+                    socialMedia: [{ ...data }]
+                });
+            } else {
+                setLoading(false);
+                swal('Error!', 'Failed to update social media links', 'error');
+            }
+        } catch (error) {
+            setLoading(false);
+            console.error('Error updating social media links:', error);
+            swal('Error!', 'Failed to update social media links', 'error');
+        }
+    };
+
+    return (
+        <div className="main-content">
+            <div className="page-content">
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-lg-12">
+                            <div className="card">
+                                <div className="card-body">
+                                    <h1 className="text-left head-small">Social Media</h1>
+
+                                    {configData ? (
+                                        <div className="mt-4">
+                                            <h2>Current Configuration:</h2>
+                                            <p>Facebook: {configData.socialMedia[0].facebook || '-'}</p>
+                                            <p>Twitter: {configData.socialMedia[0].twitter || '-'}</p>
+                                            <p>Instagram: {configData.socialMedia[0].instagram || '-'}</p>
+                                            <p>Youtube: {configData.socialMedia[0].youtube || '-'}</p>
+                                            <p>Linkedin: {configData.socialMedia[0].linkedin || '-'}</p>
+                                        </div>
+                                    ) : (
+                                        <form>
+                                            <div className="row">
+                                                <div className="col-lg-12">
+                                                    <div className="form-group">
+                                                        <label htmlFor="facebook" className="label-100 mt-3">
+                                                            Facebook
+                                                        </label>
+                                                        <input
+                                                            value={facebook}
+                                                            type="text"
+                                                            name="facebook"
+                                                            onChange={handleChange}
+                                                            className="form-control input-field"
+                                                            id="facebook"
+                                                        />
+
+                                                        <label htmlFor="twitter" className="label-100 mt-3">
+                                                            Twitter
+                                                        </label>
+                                                        <input
+                                                            value={twitter}
+                                                            type="text"
+                                                            name="twitter"
+                                                            onChange={handleChange}
+                                                            className="form-control input-field"
+                                                            id="twitter"
+                                                        />
+
+                                                        <label htmlFor="instagram" className="label-100 mt-3">
+                                                            Instagram
+                                                        </label>
+                                                        <input
+                                                            value={instagram}
+                                                            type="text"
+                                                            name="instagram"
+                                                            onChange={handleChange}
+                                                            className="form-control input-field"
+                                                            id="instagram"
+                                                        />
+
+                                                        <label htmlFor="youtube" className="label-100 mt-3">
+                                                            Youtube
+                                                        </label>
+                                                        <input
+                                                            value={youtube}
+                                                            type="text"
+                                                            name="youtube"
+                                                            onChange={handleChange}
+                                                            className="form-control input-field"
+                                                            id="youtube"
+                                                        />
+
+                                                        <label htmlFor="linkedin" className="label-100 mt-3">
+                                                            Linkedin
+                                                        </label>
+                                                        <input
+                                                            value={linkedin}
+                                                            type="text"
+                                                            name="linkedin"
+                                                            onChange={handleChange}
+                                                            className="form-control input-field"
+                                                            id="linkedin"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="row mt-1">
+                                                <div className="col-lg-12">
+                                                    <div className="form-group text-left">
+                                                        <button
+                                                            type="button"
+                                                            onClick={handleSubmit}
+                                                            className="btn btn-success btn-login waves-effect waves-light me-3 pt-2 pb-2 pr-4 pl-4"
+                                                        >
+                                                            <ClipLoader loading={loading} size={18} />
+                                                            {!loading ? 'Save' : 'Saving...'}
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="d-flex flex-column mb-3">
-                  <CFormLabel htmlFor="twitter">Twitter</CFormLabel>
-                  <CFormInput
-                    type="text"
-                    id="twitter"
-                    name="twitter"
-                    placeholder="Twitter"
-                    value={links.twitter}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="d-flex flex-column mb-3">
-                  <CFormLabel htmlFor="instagram">Instagram</CFormLabel>
-                  <CFormInput
-                    type="text"
-                    id="instagram"
-                    name="instagram"
-                    placeholder="Instagram"
-                    value={links.instagram}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="d-flex flex-column mb-3">
-                  <CFormLabel htmlFor="youtube">Youtube</CFormLabel>
-                  <CFormInput
-                    type="text"
-                    id="youtube"
-                    name="youtube"
-                    placeholder="Youtube"
-                    value={links.youtube}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="d-flex flex-column mb-3">
-                  <CFormLabel htmlFor="linkedin">LinkedIn</CFormLabel>
-                  <CFormInput
-                    type="text"
-                    id="linkedin"
-                    name="linkedin"
-                    placeholder="LinkedIn"
-                    value={links.linkedin}
-                    onChange={handleChange}
-                  />
-                </div>
-                <CRow className="justify-content-end">
-                  <CCol sm="2">
-                    <CButton color="primary" onClick={handleSave}>
-                      Save
-                    </CButton>
-                  </CCol>
-                </CRow>
-              </CForm>
-            </CCardBody>
-          </CCard>
-        </CCol>
-      </CRow>
-    </CContainer>
-  )
+            </div>
+        </div>
+    );
 }
 
-export default SocialMedia
-
-
-
-
-
-// Dynamic Ui
-// import React, { useState } from 'react'
-// import { useDispatch, useSelector } from 'react-redux'
-// import {
-//   CContainer,
-//   CRow,
-//   CCol,
-//   CCard,
-//   CCardBody,
-//   CForm,
-//   CFormLabel,
-//   CFormInput,
-//   CButton
-// } from '@coreui/react'
-// import { useSaveSocialMediaLinksMutation } from './service/socialMediaApiSlice'
-
-// const SocialMedia = () => {
-//   const [links, setLinks] = useState({
-//     facebook: '',
-//     twitter: '',
-//     instagram: '',
-//     youtube: '',
-//     linkedin: '',
-//   })
-
-//   const [saveSocialMediaLinks, { isLoading, isSuccess, isError, error }] = useSaveSocialMediaLinksMutation()
-
-//   const handleChange = (e) => {
-//     const { name, value } = e.target
-//     setLinks({
-//       ...links,
-//       [name]: value,
-//     })
-//   }
-
-//   const handleSave = async () => {
-//     try {
-//       await saveSocialMediaLinks(links).unwrap()
-//       // Add any success handling here
-//     } catch (err) {
-//       // Add any error handling here
-//     }
-//   }
-
-//   return (
-//     <CContainer>
-//       <CRow className="justify-content-center mt-4">
-//         <CCol md="8">
-//           <CCard>
-//             <CCardBody>
-//               <h2 className="text-center mb-4">Social Media</h2>
-//               <CForm>
-//                 <CRow className="mb-3">
-//                   <CFormLabel htmlFor="facebook" className="col-sm-2 col-form-label">Facebook</CFormLabel>
-//                   <CCol sm="10">
-//                     <CFormInput
-//                       type="text"
-//                       id="facebook"
-//                       name="facebook"
-//                       placeholder="Facebook"
-//                       value={links.facebook}
-//                       onChange={handleChange}
-//                     />
-//                   </CCol>
-//                 </CRow>
-//                 <CRow className="mb-3">
-//                   <CFormLabel htmlFor="twitter" className="col-sm-2 col-form-label">Twitter</CFormLabel>
-//                   <CCol sm="10">
-//                     <CFormInput
-//                       type="text"
-//                       id="twitter"
-//                       name="twitter"
-//                       placeholder="Twitter"
-//                       value={links.twitter}
-//                       onChange={handleChange}
-//                     />
-//                   </CCol>
-//                 </CRow>
-//                 <CRow className="mb-3">
-//                   <CFormLabel htmlFor="instagram" className="col-sm-2 col-form-label">Instagram</CFormLabel>
-//                   <CCol sm="10">
-//                     <CFormInput
-//                       type="text"
-//                       id="instagram"
-//                       name="instagram"
-//                       placeholder="Instagram"
-//                       value={links.instagram}
-//                       onChange={handleChange}
-//                     />
-//                   </CCol>
-//                 </CRow>
-//                 <CRow className="mb-3">
-//                   <CFormLabel htmlFor="youtube" className="col-sm-2 col-form-label">Youtube</CFormLabel>
-//                   <CCol sm="10">
-//                     <CFormInput
-//                       type="text"
-//                       id="youtube"
-//                       name="youtube"
-//                       placeholder="Youtube"
-//                       value={links.youtube}
-//                       onChange={handleChange}
-//                     />
-//                   </CCol>
-//                 </CRow>
-//                 <CRow className="mb-3">
-//                   <CFormLabel htmlFor="linkedin" className="col-sm-2 col-form-label">LinkedIn</CFormLabel>
-//                   <CCol sm="10">
-//                     <CFormInput
-//                       type="text"
-//                       id="linkedin"
-//                       name="linkedin"
-//                       placeholder="LinkedIn"
-//                       value={links.linkedin}
-//                       onChange={handleChange}
-//                     />
-//                   </CCol>
-//                 </CRow>
-//                 <CRow className="justify-content-end">
-//                   <CCol sm="2">
-//                     <CButton color="primary" onClick={handleSave} disabled={isLoading}>
-//                       {isLoading ? 'Saving...' : 'Save'}
-//                     </CButton>
-//                   </CCol>
-//                 </CRow>
-//                 {isError && (
-//                   <CRow className="mt-3">
-//                     <CCol>
-//                       <div className="text-danger">{error?.data?.message || 'Failed to save data'}</div>
-//                     </CCol>
-//                   </CRow>
-//                 )}
-//                 {isSuccess && (
-//                   <CRow className="mt-3">
-//                     <CCol>
-//                       <div className="text-success">Data saved successfully!</div>
-//                     </CCol>
-//                   </CRow>
-//                 )}
-//               </CForm>
-//             </CCardBody>
-//           </CCard>
-//         </CCol>
-//       </CRow>
-//     </CContainer>
-//   )
-// }
-
-// export default SocialMedia
+export default Socialmedia;
