@@ -123,6 +123,9 @@ const dotenv = require("dotenv");
 
 const errorMiddleware = require("./middleware/errorMiddleware.js");
 const userRouter = require("./routes/userRoutes");
+const Config_routes = require("./routes/Config_routes");
+
+// const config_client_routes = require("./routes/config_client_routes");
 
 dotenv.config(); // Load environment variables from .env file
 const app = express();
@@ -160,7 +163,8 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1/users", userRouter);
-
+app.use("/api/v1/config", Config_routes);
+// app.use("/api/v1/config", config_client_routes);
 
 app.use(errorMiddleware.notFound);
 app.use(errorMiddleware.errorHandler);
