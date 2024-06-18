@@ -62,10 +62,12 @@ function ApplicationName() {
                 setLoading(false);
                 swal('Success!', response.data.message, 'success');
 
-                // After successful submission, update the local state
-                setConfigData({
-                    appName: [{ applicationName }]
-                });
+                // // After successful submission, update the local state
+                // setConfigData({
+                //     appName: [{ applicationName }]
+                // });
+                // Fetch the updated configuration data
+                await getConfiguration();
             } else {
                 setLoading(false);
                 swal('Error!', 'Failed to update application name', 'error');

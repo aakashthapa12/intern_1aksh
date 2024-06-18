@@ -116,7 +116,7 @@ function Address() {
                 },
             });
 
-            if (response.status === 201) {
+            if (response.status === 200 || response.status === 201) {
                 setLoading(false);
                 swal('Success!', response.data.message, 'success');
 

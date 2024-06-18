@@ -28,7 +28,7 @@ const modules = {
     [{ 'script': 'sub' }, { 'script': 'super' }],
     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
     [{ 'indent': '-1' }, { 'indent': '+1' }, { 'align': [] }],
-    ['link', 'image'],
+    ['link',],
     ['clean'],
   ],
 };
@@ -48,7 +48,7 @@ const formats = [
   'indent',
   'align',
   'link',
-  'image',
+  // 'image',
 ];
 
 const Content = () => {
@@ -61,7 +61,9 @@ const Content = () => {
   ]);
 
   const [editMode, setEditMode] = useState(false);
-  const [currentContent, setCurrentContent] = useState({ id: null, page: '', body: '' });
+  // const [currentContent, setCurrentContent] = useState({ id: null, page: '', body: '' });
+  // Initialize the state with an empty body
+  const [currentContent, setCurrentContent] = useState({ body: '' });
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
@@ -158,7 +160,7 @@ const Content = () => {
             <div className="mb-3">
               <ReactQuill
                 id="body"
-                value={currentContent.body}
+                value={currentContent.body || ''}
                 onChange={handleChange}
                 modules={modules}
                 formats={formats}

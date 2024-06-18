@@ -252,97 +252,98 @@ const _nav = [
   },
   {
     component: CNavGroup,
-    name: 'Website Related',
-    icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
-    items: [
-      {
-        component: CNavItem,
-        name: 'Banner',
-        to: '/website-related/banner',
-        icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
-      },
-      {
-        component: CNavItem,
-        name: 'Register Image',
-        to: '/website-related/register-image',
-        icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
-      },
-      {
-        component: CNavItem,
-        name: 'Login Image',
-        to: '/website-related/login-image',
-        icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
-      },
-      {
-        component: CNavItem,
-        name: 'Shop Page Image',
-        to: '/website-related/shop-page-image',
-        icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
-      },
-      {
-        component: CNavItem,
-        name: 'Testimonials',
-        to: '/website-related/testimonials',
-        icon: <CIcon icon={cilGraph} customClassName="nav-icon" />,
-      },
-      {
-        component: CNavItem,
-        name: 'SEO and Analytics',
-        to: '/website-related/seo-analytics',
-        icon: <CIcon icon={cilGraph} customClassName="nav-icon" />,
-      },
-      {
-        component: CNavItem,
-        name: 'Content',
-        to: '/website-related/content',
-        icon: <CIcon icon={cilText} customClassName="nav-icon" />,
-      },
-      {
-        component: CNavItem,
-        name: 'Home',
-        to: '/website-related/home',
-        icon: <CIcon icon={cilHouse} customClassName="nav-icon" />,
-      },
-    ],
-  },
-  // New Configuration Section
-  {
-    component: CNavGroup,
-    name: 'Configuration',
+    name: 'Settings',
     icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
     items: [
       {
         component: CNavItem,
         name: 'Social Media',
-        to: '/configuration/social-media',
+        to: '/settings/social-media',
         icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
       },
       {
         component: CNavItem,
         name: 'Application Name',
-        to: '/configuration/application-name',
+        to: '/settings/application-name',
         icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
       },
       {
         component: CNavItem,
         name: 'Address',
-        to: '/configuration/address',
+        to: '/settings/address',
         icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
       },
       {
         component: CNavItem,
         name: 'Logos',
-        to: '/configuration/logos',
+        to: '/settings/logos',
         icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
       },
       {
         component: CNavItem,
         name: 'Copyright Message',
-        to: '/configuration/copyright-message',
+        to: '/settings/copyright-message',
         icon: <CIcon icon={cilNotes} customClassName="nav-icon" />,
       },
+      {
+        component: CNavItem,
+        name: 'Banner',
+        to: '/settings/banner',
+        icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
+      },
+      {
+        component: CNavItem,
+        name: 'Register Image',
+        to: '/settings/register-image',
+        icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
+      },
+      {
+        component: CNavItem,
+        name: 'Login Image',
+        to: '/settings/login-image',
+        icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
+      },
+      {
+        component: CNavItem,
+        name: 'Shop Page Image',
+        to: '/settings/shop-page-image',
+        icon: <CIcon icon={cilImage} customClassName="nav-icon" />,
+      },
+      // {
+      //   component: CNavItem,
+      //   name: 'Testimonials',
+      //   to: '/website-related/testimonials',
+      //   icon: <CIcon icon={cilGraph} customClassName="nav-icon" />,
+      // },
+      // {
+      //   component: CNavItem,
+      //   name: 'SEO and Analytics',
+      //   to: '/website-related/seo-analytics',
+      //   icon: <CIcon icon={cilGraph} customClassName="nav-icon" />,
+      // },
+      {
+        component: CNavItem,
+        name: 'Content',
+        to: '/settings/content',
+        icon: <CIcon icon={cilText} customClassName="nav-icon" />,
+      },
+      // {
+      //   component: CNavItem,
+      //   name: 'Home',
+      //   to: '/website-related/home',
+      //   icon: <CIcon icon={cilHouse} customClassName="nav-icon" />,
+      // },
     ],
   },
+  // New Configuration Section
+  // {
+  //   component: CNavGroup,
+  //   name: 'Configuration',
+  //   icon: <CIcon icon={cilSettings} customClassName="nav-icon" />,
+  //   items: [
+      
+  //   ],
+  // },
   {
     component: CNavGroup,
     name: 'Customer Service',
